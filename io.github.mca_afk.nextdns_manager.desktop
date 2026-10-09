@@ -2,7 +2,8 @@
 Name=NextDNS Manager
 Comment=Configure encrypted NextDNS on this computer
 Exec=nextdns-manager
-Icon=nextdns-manager
+Icon=io.github.mca_afk.nextdns_manager
+StartupWMClass=io.github.mca_afk.nextdns_manager
 Terminal=false
 Type=Application
 Categories=Settings;

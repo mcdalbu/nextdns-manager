@@ -11,12 +11,13 @@ from gi.repository import Adw, GLib, Gtk
 
 HELPER = "/usr/libexec/nextdns-manager-helper"
 CONFIG = "/etc/systemd/resolved.conf.d/90-nextdns-manager.conf"
+APP_ID = "io.github.mca_afk.nextdns_manager"
 
 class Window(Adw.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app, title="NextDNS Manager")
         self.set_default_size(650, 560)
-        self.set_icon_name("nextdns-manager")
+        self.set_icon_name(APP_ID)
 
         self.toasts = Adw.ToastOverlay()
         self.set_content(self.toasts)
@@ -34,7 +35,7 @@ class Window(Adw.ApplicationWindow):
 
         heading = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         heading.set_halign(Gtk.Align.CENTER)
-        icon = Gtk.Image.new_from_icon_name("nextdns-manager")
+        icon = Gtk.Image.new_from_icon_name(APP_ID)
         icon.set_pixel_size(64)
         heading.append(icon)
         title = Gtk.Label(label="NextDNS Manager")
@@ -146,7 +147,7 @@ class Window(Adw.ApplicationWindow):
 
 class Application(Adw.Application):
     def __init__(self):
-        super().__init__(application_id="io.github.mca_afk.nextdns_manager")
+        super().__init__(application_id=APP_ID)
 
     def do_activate(self):
         window = self.get_active_window() or Window(self)

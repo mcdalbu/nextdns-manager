@@ -7,7 +7,7 @@ A GTK 4 and libadwaita desktop app for configuring NextDNS through systemd-resol
 Build the RPM with `./build-rpm.sh`, then install the resulting package:
 
 ```sh
-sudo dnf install ./nextdns-manager-2.1.0-1.*.noarch.rpm
+sudo dnf install ./nextdns-manager-2.1.1-1.*.noarch.rpm
 ```
 
 Launch **NextDNS Manager** from the application menu. Enter the six-character
