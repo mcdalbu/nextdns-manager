@@ -1,40 +1,45 @@
 Name:           nextdns-manager
-Version:        1.0.0
+Version:        2.1.0
 Release:        1%{?dist}
-Summary:        NextDNS Manager for Systemd-Resolved
-
+Summary:        GTK 4 and libadwaita NextDNS manager for systemd-resolved
 License:        MIT
-URL:            https://github.com/mcda/nextdns-manager
+URL:            https://github.com/mca-afk/nextdns-manager
 Source0:        %{name}-%{version}.tar.gz
-
 BuildArch:      noarch
-BuildRequires:  python3
-Requires:       python3
+Requires:       /usr/bin/python3
 Requires:       python3-gobject
 Requires:       gtk4
+Requires:       libadwaita
 Requires:       polkit
 Requires:       systemd
-Requires:       NetworkManager
 
 %description
-A GTK4 application to manage NextDNS configuration for systemd-resolved on Fedora.
+Configure encrypted NextDNS through a GTK 4/libadwaita interface and a narrowly scoped
+PolicyKit helper. The package uses a dedicated systemd-resolved drop-in.
 
 %prep
 %setup -q
 
 %install
-mkdir -p %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/applications
-
-install -m 755 nextdns_gui.py %{buildroot}%{_bindir}/nextdns-manager
-install -m 755 nextdns.sh %{buildroot}%{_bindir}/nextdns-manager-cli
-install -m 644 nextdns-manager.desktop %{buildroot}%{_datadir}/applications/
+install -Dpm 755 nextdns_gui.py %{buildroot}%{_bindir}/nextdns-manager
+install -Dpm 755 nextdns_helper.py %{buildroot}%{_libexecdir}/nextdns-manager-helper
+install -Dpm 644 nextdns-manager.desktop %{buildroot}%{_datadir}/applications/nextdns-manager.desktop
+install -Dpm 644 nextdns-manager.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/nextdns-manager.svg
+install -Dpm 644 nextdns-manager.policy %{buildroot}%{_datadir}/polkit-1/actions/io.github.mca_afk.nextdns_manager.policy
 
 %files
 %{_bindir}/nextdns-manager
-%{_bindir}/nextdns-manager-cli
+%{_libexecdir}/nextdns-manager-helper
 %{_datadir}/applications/nextdns-manager.desktop
+%{_datadir}/icons/hicolor/scalable/apps/nextdns-manager.svg
+%{_datadir}/polkit-1/actions/io.github.mca_afk.nextdns_manager.policy
 
 %changelog
-* Sat Apr 18 2026 mcda - 1.0.0-1
-- Initial release
+* Fri Oct 09 2026 mcda - 2.1.0-1
+- Use libadwaita interface and system theme
+
+* Fri Oct 09 2026 mcda - 2.0.1-1
+- Preserve device name capitalization
+
+* Fri Oct 09 2026 mcda - 2.0.0-1
+- Add profile configuration, scoped authorization, and a custom icon

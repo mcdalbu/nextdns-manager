@@ -1,10 +1,10 @@
 [Desktop Entry]
 Name=NextDNS Manager
-Comment=Manage Systemd-Resolved NextDNS Configuration
+Comment=Configure encrypted NextDNS on this computer
 Exec=nextdns-manager
-Icon=network-workgroup
+Icon=nextdns-manager
 Terminal=false
 Type=Application
-Categories=System;Settings;
+Categories=Settings;
 Keywords=dns;nextdns;network;
 StartupNotify=true
