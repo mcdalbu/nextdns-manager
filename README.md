@@ -7,7 +7,7 @@ A GTK 4 and libadwaita desktop app for configuring NextDNS through systemd-resol
 Build the RPM with `./build-rpm.sh`, then install the resulting package:
 
 ```sh
-sudo dnf install ./nextdns-manager-2.2.0-1.*.noarch.rpm
+sudo dnf install ./nextdns-manager-2.3.0-1.*.noarch.rpm
 ```
 
 Launch **NextDNS Manager** from the application menu. Enter the six-character
@@ -28,3 +28,17 @@ contents cannot be reconstructed automatically.
 
 The status panel shows the installed drop-in and the DNS servers reported by
 `resolvectl`. It does not verify the account-side NextDNS connection.
+
+## Tray and diagnostics
+
+Enable **Run in system tray** to keep a status icon after closing the window.
+The blue icon with a green dot means the NextDNS drop-in is installed; the gray
+icon means it is absent. The icon reports local configuration state, while the
+**Test** tab checks the actual connection. Enable **Start tray at login** to
+create a per-user XDG autostart entry. On GNOME, an AppIndicator-compatible
+extension must be enabled for the tray icon to appear.
+
+The **Test** tab queries the official `https://test.nextdns.io/` endpoint
+without using a proxy and shows its response. The **Ping** tab embeds
+`https://ping.nextdns.io/` for NextDNS's latency test. These are the working
+`.io` endpoints; the `.com` names are not used.
