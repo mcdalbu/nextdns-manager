@@ -1,9 +1,9 @@
 Name:           nextdns-manager
-Version:        2.1.1
+Version:        2.2.0
 Release:        1%{?dist}
 Summary:        GTK 4 and libadwaita NextDNS manager for systemd-resolved
 License:        MIT
-URL:            https://github.com/mca-afk/nextdns-manager
+URL:            https://github.com/mcdalbu/nextdns-manager
 Source0:        %{name}-%{version}.tar.gz
 BuildArch:      noarch
 Requires:       /usr/bin/python3
@@ -35,6 +35,10 @@ install -Dpm 644 nextdns-manager.policy %{buildroot}%{_datadir}/polkit-1/actions
 %{_datadir}/polkit-1/actions/io.github.mca_afk.nextdns_manager.policy
 
 %changelog
+* Thu Oct 15 2026 mcda - 2.2.0-1
+- Add optional local persistence for the last configuration
+- Replace the icon with a blue NextDNS-inspired shield
+
 * Fri Oct 09 2026 mcda - 2.1.1-1
 - Match the desktop file and icon names to the GTK application ID
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")"
-version=2.1.1
+version=2.2.0
 topdir="$(mktemp -d)"
 trap 'rm -rf "$topdir"' EXIT
 mkdir -p "$topdir"/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}

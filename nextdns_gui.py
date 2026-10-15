@@ -1,8 +1,12 @@
 #!/usr/bin/python3
 """GTK 4 and libadwaita front end for NextDNS configuration."""
+import json
+import os
 import re
 import subprocess
+import tempfile
 import threading
+from pathlib import Path
 
 import gi
 gi.require_version("Gtk", "4.0")
@@ -12,6 +16,41 @@ from gi.repository import Adw, GLib, Gtk
 HELPER = "/usr/libexec/nextdns-manager-helper"
 CONFIG = "/etc/systemd/resolved.conf.d/90-nextdns-manager.conf"
 APP_ID = "io.github.mca_afk.nextdns_manager"
+SETTINGS_FILE = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "nextdns-manager" / "settings.json"
+
+
+def load_preferences():
+    try:
+        with SETTINGS_FILE.open(encoding="utf-8") as stream:
+            saved = json.load(stream)
+        if isinstance(saved, dict) and saved.get("remember") is True:
+            return {
+                "remember": True,
+                "profile": saved.get("profile", "") if isinstance(saved.get("profile"), str) else "",
+                "device": saved.get("device", "") if isinstance(saved.get("device"), str) else "",
+            }
+    except (OSError, ValueError):
+        pass
+    return {"remember": False, "profile": "", "device": ""}
+
+
+def save_preferences(remember, profile="", device=""):
+    settings = {
+        "remember": bool(remember),
+        "profile": profile if remember else "",
+        "device": device if remember else "",
+    }
+    SETTINGS_FILE.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=".settings-", dir=SETTINGS_FILE.parent)
+    try:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            json.dump(settings, stream)
+            stream.write("\n")
+        os.replace(temporary, SETTINGS_FILE)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 class Window(Adw.ApplicationWindow):
     def __init__(self, app):
@@ -56,6 +95,16 @@ class Window(Adw.ApplicationWindow):
         config.add(self.profile)
         self.device = Adw.EntryRow(title="Device name")
         config.add(self.device)
+        self.remember = Adw.SwitchRow(
+            title="Remember last configuration",
+            subtitle="Keep the profile ID and device name after NextDNS is disabled.",
+        )
+        config.add(self.remember)
+        saved = load_preferences()
+        self.profile.set_text(saved["profile"])
+        self.device.set_text(saved["device"])
+        self.remember.set_active(saved["remember"])
+        self.remember.connect("notify::active", self.on_remember_changed)
 
         buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         buttons.set_halign(Gtk.Align.END)
@@ -129,17 +178,35 @@ class Window(Adw.ApplicationWindow):
             try:
                 command = ["pkexec", HELPER, action] + ([profile, device] if action == "enable" else [])
                 result = subprocess.run(command, capture_output=True, text=True, timeout=60)
-                GLib.idle_add(self.finish, result.returncode == 0, result.stderr.strip() or result.stdout.strip())
+                GLib.idle_add(
+                    self.finish, action, profile, device,
+                    result.returncode == 0, result.stderr.strip() or result.stdout.strip(),
+                )
             except (OSError, subprocess.TimeoutExpired) as exc:
-                GLib.idle_add(self.finish, False, str(exc))
+                GLib.idle_add(self.finish, action, profile, device, False, str(exc))
         threading.Thread(target=work, daemon=True).start()
 
-    def finish(self, success, detail):
+    def finish(self, action, profile, device, success, detail):
         self.enable.set_sensitive(True)
         self.disable.set_sensitive(True)
+        if success and action == "enable" and self.remember.get_active():
+            try:
+                save_preferences(True, profile, device)
+            except OSError as exc:
+                self.show_toast(f"Configuration applied, but could not save preferences: {exc}")
         self.show_toast(("Configuration updated. " if success else "Could not update configuration. ") + detail)
         self.refresh()
         return GLib.SOURCE_REMOVE
+
+    def on_remember_changed(self, _row, _property):
+        try:
+            save_preferences(
+                self.remember.get_active(),
+                self.profile.get_text().strip().lower(),
+                self.device.get_text().strip(),
+            )
+        except OSError as exc:
+            self.show_toast(f"Could not save preferences: {exc}")
 
     def show_toast(self, message):
         self.toasts.add_toast(Adw.Toast.new(message))

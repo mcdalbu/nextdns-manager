@@ -7,12 +7,17 @@ A GTK 4 and libadwaita desktop app for configuring NextDNS through systemd-resol
 Build the RPM with `./build-rpm.sh`, then install the resulting package:
 
 ```sh
-sudo dnf install ./nextdns-manager-2.1.1-1.*.noarch.rpm
+sudo dnf install ./nextdns-manager-2.2.0-1.*.noarch.rpm
 ```
 
 Launch **NextDNS Manager** from the application menu. Enter the six-character
 profile ID from your NextDNS setup page and a device name, then select
 **Enable NextDNS**. PolicyKit prompts for administrator authentication.
+
+Enable **Remember last configuration** to keep the profile ID and device name
+after disabling NextDNS or closing the app. These preferences are stored in
+`~/.config/nextdns-manager/settings.json` for the current user. Turning the
+option off removes the saved profile and device name from that file.
 
 The app writes only
 `/etc/systemd/resolved.conf.d/90-nextdns-manager.conf`. **Disable** removes
