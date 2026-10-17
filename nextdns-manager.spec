@@ -1,5 +1,5 @@
 Name:           nextdns-manager
-Version:        2.3.0
+Version:        2.3.1
 Release:        1%{?dist}
 Summary:        GTK 4 and libadwaita NextDNS manager for systemd-resolved
 License:        MIT
@@ -44,6 +44,9 @@ install -Dpm 644 nextdns-manager.policy %{buildroot}%{_datadir}/polkit-1/actions
 %{_datadir}/polkit-1/actions/io.github.mca_afk.nextdns_manager.policy
 
 %changelog
+* Fri Oct 16 2026 mcda - 2.3.1-1
+- Replace tray shields with glowing green and red status dots
+
 * Thu Oct 15 2026 mcda - 2.3.0-1
 - Add tray status, login startup option, and NextDNS diagnostic tabs
 
