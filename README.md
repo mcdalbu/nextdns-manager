@@ -7,7 +7,7 @@ A GTK 4 and libadwaita desktop app for configuring NextDNS through systemd-resol
 Build the RPM with `./build-rpm.sh`, then install the resulting package:
 
 ```sh
-sudo dnf install ./nextdns-manager-2.3.1-1.*.noarch.rpm
+sudo dnf install ./nextdns-manager-2.4.0-1.*.noarch.rpm
 ```
 
 Launch **NextDNS Manager** from the application menu. Enter the six-character
@@ -37,6 +37,12 @@ dot means it is absent. The icon reports local configuration state, while the
 **Test** tab checks the actual connection. Enable **Start tray at login** to
 create a per-user XDG autostart entry. On GNOME, an AppIndicator-compatible
 extension must be enabled for the tray icon to appear.
+
+Use **Connect** or **Disconnect** in the tray menu to change the configuration
+without opening the main window. PolicyKit prompts for administrator authentication.
+The tray keeps the last active profile and device name in memory for reconnection.
+Enable **Remember last configuration** to reconnect after restarting the tray;
+if no configuration is available, **Connect** opens the manager to configure it.
 
 The **Test** tab queries the official `https://test.nextdns.io/` endpoint
 without using a proxy and shows its response. The **Ping** tab embeds
