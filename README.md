@@ -10,8 +10,8 @@ Build the RPM with `./build-rpm.sh`, then install the resulting package:
 sudo dnf install ./nextdns-manager-2.4.0-1.*.noarch.rpm
 ```
 
-Launch **NextDNS Manager** from the application menu. Enter the six-character
-profile ID from your NextDNS setup page and a device name, then select
+Launch **NextDNS Manager** from the application menu. Enter the profile ID
+from your NextDNS setup page and a device name, then select
 **Enable NextDNS**. PolicyKit prompts for administrator authentication.
 
 Enable **Remember last configuration** to keep the profile ID and device name

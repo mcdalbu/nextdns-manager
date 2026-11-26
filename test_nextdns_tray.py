@@ -22,15 +22,18 @@ class TrayTests(unittest.TestCase):
             self.addCleanup(patcher.stop)
 
     def test_active_configuration_takes_priority(self):
-        self.config.write_text("[Resolve]\nDNS=45.90.28.0#My-PC-abc123.dns.nextdns.io\n")
         self.settings.write_text(json.dumps(dict(remember=True, profile="123abc", device="Other")))
-        self.assertEqual(tray.load_configuration(), ("abc123", "My-PC"))
+        for profile in ("abc123", "c2ke6y", "c2ke6y89ab"):
+            with self.subTest(profile=profile):
+                self.config.write_text(f"[Resolve]\nDNS=45.90.28.0#My-PC-{profile}.dns.nextdns.io\n")
+                self.assertEqual(tray.load_configuration(), (profile, "My-PC"))
 
     def test_saved_configuration_requires_opt_in_and_valid_values(self):
         for remember, profile, device, expected in (
             (True, "abc123", "My-PC", ("abc123", "My-PC")),
+            (True, "c2ke6y89", "My-PC", ("c2ke6y89", "My-PC")),
             (False, "abc123", "My-PC", None),
-            (True, "invalid", "My-PC", None),
+            (True, "invalid!", "My-PC", None),
             (True, "abc123", "-bad", None),
             (True, None, [], None),
         ):
