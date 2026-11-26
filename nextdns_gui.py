@@ -143,7 +143,6 @@ class Window(Adw.ApplicationWindow):
         )
         root.append(config)
         self.profile = Adw.EntryRow(title="Profile ID")
-        self.profile.set_max_length(6)
         config.add(self.profile)
         self.device = Adw.EntryRow(title="Device name")
         config.add(self.device)
@@ -384,8 +383,8 @@ class Window(Adw.ApplicationWindow):
         profile = self.profile.get_text().strip().lower()
         device = self.device.get_text().strip()
         if action == "enable":
-            if not re.fullmatch(r"[0-9a-f]{6}", profile):
-                self.show_toast("Enter a six-character hexadecimal profile ID.")
+            if not re.fullmatch(r"[0-9a-z]{6,10}", profile):
+                self.show_toast("Invalid profile ID.")
                 return
             if not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?", device):
                 self.show_toast("Use up to 63 letters, numbers, or internal hyphens for the device name.")

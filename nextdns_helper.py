@@ -15,8 +15,8 @@ def restart():
 
 
 def enable(profile, device):
-    if not re.fullmatch(r"[0-9a-f]{6}", profile):
-        raise ValueError("Invalid NextDNS profile ID")
+    if not re.fullmatch(r"[0-9a-z]{6,10}", profile):
+        raise ValueError("Invalid profile ID.")
     if not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?", device):
         raise ValueError("Invalid device name")
     content = (

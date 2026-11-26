@@ -26,7 +26,7 @@ SETTINGS_FILE = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config
 def valid_configuration(profile, device):
     return (
         isinstance(profile, str) and isinstance(device, str)
-        and re.fullmatch(r"[0-9a-f]{6}", profile)
+        and re.fullmatch(r"[0-9a-z]{6,10}", profile)
         and re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?", device)
     )
 
@@ -34,7 +34,7 @@ def valid_configuration(profile, device):
 def load_configuration():
     try:
         content = CONFIG.read_text(encoding="utf-8")
-        match = re.search(r"^DNS=.*?#([A-Za-z0-9-]+)-([0-9a-f]{6})\.dns\.nextdns\.io", content, re.MULTILINE)
+        match = re.search(r"^DNS=.*?#([A-Za-z0-9-]+)-([0-9a-z]+)\.dns\.nextdns\.io", content, re.MULTILINE)
         if match and valid_configuration(match[2], match[1]):
             return match[2], match[1]
     except (OSError, ValueError):
